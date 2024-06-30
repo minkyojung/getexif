@@ -27,7 +27,7 @@ export default function Landing() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `https://nfdylwwxccgaajqzrvop.supabase.co/auth/v1/callback`,
+        redirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
       },
     });
   };
