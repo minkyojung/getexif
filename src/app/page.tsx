@@ -30,10 +30,13 @@ export default function Landing() {
   }, [router, pathname]);
 
   const handleLogin = async () => {
+    const redirectTo = new URL(process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL!);
+    redirectTo.hash = ''; // 해시 제거
+  
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
+        redirectTo: redirectTo.toString(),
       },
     });
   };
