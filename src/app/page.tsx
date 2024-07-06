@@ -5,7 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { Session } from "@supabase/supabase-js";
 import EXIF from "exif-js";
-import ImgCard from './component/imgCard';
+import ImgCard from '../components/ui/imgCard';
+import { Button } from '../components/ui/button';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -125,7 +126,7 @@ export default function Landing() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
       {session ? (
         <>
           <input type="file" onChange={handleFileChange} />
@@ -146,7 +147,13 @@ export default function Landing() {
           <button onClick={handleLogout}>Logout</button>
         </>
       ) : (
-        <button onClick={handleLogin}>Login</button>
+        <div className="text-center">
+          <h1 className="text-5xl font-bold mb-4" style={{ letterSpacing: '-0.02em' }}>
+            Capture carefully, Ship fast
+          </h1>
+          <p className="text-xl mb-8">Tool for Instagram and Twitter</p>
+          <Button onClick={handleLogin} variant="default" size="lg">Get started now</Button>
+        </div>
       )}
     </main>
   );
