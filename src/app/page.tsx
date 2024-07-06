@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import { Session } from "@supabase/supabase-js";
+import EXIF from "exif-js";
+import ImgCard from './component/imgCard';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,13 +15,16 @@ const supabase = createClient(
 export default function Landing() {
   const router = useRouter();
   const pathname = usePathname();
+  const [session, setSession] = useState<Session | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
+  const [exifData, setExifData] = useState<any>(null);
+  const [styles, setStyles] = useState<{ titleStyle: string; textStyle: string } | null>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.push('/Protected'); // 로그인 상태라면 Protected 페이지로 리다이렉션
-      }
+      setSession(session);
     };
     checkSession();
   }, [router, pathname]);
@@ -32,11 +38,113 @@ export default function Landing() {
     });
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    router.push('/');
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result;
+        if (result !== undefined) {
+          setImageSrc(result);
+          const img = new Image();
+          img.onload = function() {
+            EXIF.getData(img as any, function(this: any) {
+              const allMetaData = EXIF.getAllTags(this);
+              console.log(allMetaData);
+              setExifData(allMetaData);
+              console.log("EXIF data set");
+            });
+          };
+          img.src = result as string;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const downloadImageWithExif = () => {
+    if (imageSrc && imgRef.current && styles) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = imgRef.current;
+
+      const scale = 0.5;
+      const imgWidth = img.naturalWidth * scale;
+      const imgHeight = img.naturalHeight * scale;
+      const padding = 100;
+      const textHeight = 300;
+      const textMargin = 100;
+      const lineSpacing = 64;
+
+      canvas.width = imgWidth + padding * 2;
+      canvas.height = imgHeight + textHeight + padding * 2 + textMargin;
+
+      if (ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(img, padding, padding, imgWidth, imgHeight);
+
+        const make = exifData?.Make || "Unknown Make";
+        const model = exifData?.Model || "Unknown Model";
+        const focalLength = exifData?.FocalLength || "Unknown Focal Length";
+        const fNumber = exifData?.FNumber || "Unknown F-Number";
+        const exposureTime = exifData?.ExposureTime ? `1/${1 / Number(exifData.ExposureTime)}s` : "Unknown Exposure Time";
+        const iso = exifData?.ISOSpeedRatings || "Unknown ISO";
+
+        ctx.fillStyle = "black";
+        ctx.font = "bold 128px Arial";
+        ctx.textAlign = "center";
+        const firstTextYPosition = imgHeight + padding + textMargin + lineSpacing + 35;
+        ctx.fillText(`${make} ${model}`, canvas.width / 2, firstTextYPosition);
+
+        const additionalLineSpacing = 100;
+
+        ctx.fillStyle = "#4a4a4a";
+        ctx.font = "70px Arial";
+        ctx.fillText(`${focalLength} f/${fNumber} ${exposureTime} ISO ${iso}`, canvas.width / 2, imgHeight + padding + textMargin + lineSpacing * 2 + additionalLineSpacing);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataUrl);
+        downloadAnchorNode.setAttribute("download", "image_with_exif.jpg");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1>Welcome to EXIF Extractor</h1>
-      <p>Upload your images and extract EXIF data easily.</p>
-      <button onClick={handleLogin}>Log in with Google</button>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      {session ? (
+        <>
+          <input type="file" onChange={handleFileChange} />
+          {exifData && (
+            <ImgCard
+              manufacturer={String(exifData.Make)}
+              model={String(exifData.Model)}
+              focalLength={String(exifData.FocalLength)}
+              aperture={`f/${String(exifData.FNumber)}`}
+              shutterSpeed={`1/${1 / Number(exifData.ExposureTime)}s`}
+              iso={String(exifData.ISOSpeedRatings)}
+              imageSrc={imageSrc as string}
+              imgRef={imgRef}
+              getStyles={setStyles}
+            />
+          )}
+          {imageSrc && <button onClick={downloadImageWithExif}>Download Image</button>}
+          <button onClick={handleLogout}>Logout</button>
+        </>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
     </main>
   );
 }
