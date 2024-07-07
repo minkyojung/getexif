@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-import { Session } from "@supabase/supabase-js";
+import { createClient, Session } from "@supabase/supabase-js";
 import EXIF from "exif-js";
 import ImgCard from '../components/ui/imgCard';
 import { Button } from '../components/ui/button';
@@ -129,23 +128,25 @@ export default function Landing() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
       {session ? (
-        <div className="flex w-full">
-          <div className="w-1/2 p-4 max-h-screen overflow-auto">
+        <div className="flex w-full h-screen">
+          <div className="w-1/2 p-4 overflow-auto" style={{ maxHeight: "100%" }}>
             <h2 className="text-xl mb-4">Edit</h2>
             <input type="file" onChange={handleFileChange} className="mb-4" />
-            {exifData && (
-              <ImgCard
-                manufacturer={String(exifData.Make)}
-                model={String(exifData.Model)}
-                focalLength={String(exifData.FocalLength)}
-                aperture={`f/${String(exifData.FNumber)}`}
-                shutterSpeed={`1/${1 / Number(exifData.ExposureTime)}s`}
-                iso={String(exifData.ISOSpeedRatings)}
-                imageSrc={imageSrc as string}
-                imgRef={imgRef}
-                getStyles={setStyles}
-              />
-            )}
+            <div className="fixed-image-container mb-4">
+              {exifData && (
+                <ImgCard
+                  manufacturer={String(exifData.Make)}
+                  model={String(exifData.Model)}
+                  focalLength={String(exifData.FocalLength)}
+                  aperture={`f/${String(exifData.FNumber)}`}
+                  shutterSpeed={`1/${1 / Number(exifData.ExposureTime)}s`}
+                  iso={String(exifData.ISOSpeedRatings)}
+                  imageSrc={imageSrc as string}
+                  imgRef={imgRef}
+                  getStyles={setStyles}
+                />
+              )}
+            </div>
             {imageSrc && <button onClick={downloadImageWithExif}>Download Image</button>}
             <button onClick={handleLogout}>Logout</button>
           </div>
