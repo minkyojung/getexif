@@ -7,6 +7,7 @@ import { Session } from "@supabase/supabase-js";
 import EXIF from "exif-js";
 import ImgCard from '../components/ui/imgCard';
 import { Button } from '../components/ui/button';
+import InstagramPost from '../components/instagramUI';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -128,30 +129,45 @@ export default function Landing() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
       {session ? (
-        <>
-          <input type="file" onChange={handleFileChange} />
-          {exifData && (
-            <ImgCard
-              manufacturer={String(exifData.Make)}
-              model={String(exifData.Model)}
-              focalLength={String(exifData.FocalLength)}
-              aperture={`f/${String(exifData.FNumber)}`}
-              shutterSpeed={`1/${1 / Number(exifData.ExposureTime)}s`}
-              iso={String(exifData.ISOSpeedRatings)}
-              imageSrc={imageSrc as string}
-              imgRef={imgRef}
-              getStyles={setStyles}
-            />
-          )}
-          {imageSrc && <button onClick={downloadImageWithExif}>Download Image</button>}
-          <button onClick={handleLogout}>Logout</button>
-        </>
+        <div className="flex w-full">
+          <div className="w-1/2 p-4">
+            <h2 className="text-xl mb-4">Edit</h2>
+            <input type="file" onChange={handleFileChange} className="mb-4" />
+            {exifData && (
+              <ImgCard
+                manufacturer={String(exifData.Make)}
+                model={String(exifData.Model)}
+                focalLength={String(exifData.FocalLength)}
+                aperture={`f/${String(exifData.FNumber)}`}
+                shutterSpeed={`1/${1 / Number(exifData.ExposureTime)}s`}
+                iso={String(exifData.ISOSpeedRatings)}
+                imageSrc={imageSrc as string}
+                imgRef={imgRef}
+                getStyles={setStyles}
+              />
+            )}
+            {imageSrc && <button onClick={downloadImageWithExif}>Download Image</button>}
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+          <div className="w-1/2 p-4">
+            <h2 className="text-xl mb-4">Preview on Instagram</h2>
+            {imageSrc && (
+              <InstagramPost
+                username="username"
+                imageUrl={imageSrc as string}
+                caption="This is a caption"
+                likes={123}
+                comments={45}
+              />
+            )}
+          </div>
+        </div>
       ) : (
         <div className="text-center">
           <h1 className="text-5xl font-bold mb-4" style={{ letterSpacing: '-0.02em' }}>
             Capture carefully, Ship fast
           </h1>
-          <p className="text-xl mb-8">Tool for Instagram and Twitter</p>
+          <p className="text-xl mb-8">Simplyfy your workflow</p>
           <Button onClick={handleLogin} variant="default" size="lg">Get started now</Button>
         </div>
       )}
