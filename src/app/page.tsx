@@ -77,47 +77,47 @@ export default function Landing() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = imgRef.current;
-
+  
       // Calculate the scale factor to fit the image within the canvas
       const maxWidth = 800; // Maximum width for the image
       const maxHeight = 800; // Maximum height for the image
       let scale = Math.min(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-
+  
       const imgWidth = img.naturalWidth * scale;
       const imgHeight = img.naturalHeight * scale;
       const padding = 100;
       const textHeight = 300;
       const textMargin = 100;
       const lineSpacing = 64;
-
+  
       canvas.width = imgWidth + padding * 2;
       canvas.height = imgHeight + textHeight + padding * 2 + textMargin;
-
+  
       if (ctx) {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+  
         ctx.drawImage(img, padding, padding, imgWidth, imgHeight);
-
+  
         const make = exifData?.Make || "Unknown Make";
         const model = exifData?.Model || "Unknown Model";
         const focalLength = exifData?.FocalLength || "Unknown Focal Length";
         const fNumber = exifData?.FNumber || "Unknown F-Number";
         const exposureTime = exifData?.ExposureTime ? `1/${1 / Number(exifData.ExposureTime)}s` : "Unknown Exposure Time";
         const iso = exifData?.ISOSpeedRatings || "Unknown ISO";
-
+  
         ctx.fillStyle = "black";
         ctx.font = "bold 128px Arial";
         ctx.textAlign = "center";
         const firstTextYPosition = imgHeight + padding + textMargin + lineSpacing + 35;
         ctx.fillText(`${make} ${model}`, canvas.width / 2, firstTextYPosition);
-
+  
         const additionalLineSpacing = 100;
-
+  
         ctx.fillStyle = "#4a4a4a";
         ctx.font = "70px Arial";
         ctx.fillText(`${focalLength} f/${fNumber} ${exposureTime} ISO ${iso}`, canvas.width / 2, imgHeight + padding + textMargin + lineSpacing * 2 + additionalLineSpacing);
-
+  
         const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataUrl);
