@@ -75,10 +75,10 @@
   }
 
   .fixed-image-container {
-    @apply max-h-[500px] overflow-hidden flex justify-center items-center mb-4;
-  }
+  @apply max-h-[500px] overflow-hidden flex justify-center items-center mb-4;
+}
 
-  .fixed-image-container img {
-    @apply max-h-full w-auto object-contain;
-  }
+.fixed-image-container img {
+  @apply max-h-full max-w-full object-contain;
+}
 }
