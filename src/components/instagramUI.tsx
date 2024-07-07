@@ -17,9 +17,9 @@ const InstagramPost: React.FC<InstagramPostProps> = ({ username, imageUrl, capti
         <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
           <Image src="/placeholder-avatar.jpg" alt={username} width={32} height={32} className="object-cover" />
         </div>
-        <span className="font-semibold text-sm">{username}</span>
+        <span className="font-semibold text-sm text-black">{username}</span>
         <div className="ml-auto">
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
           </svg>
         </div>
@@ -33,37 +33,24 @@ const InstagramPost: React.FC<InstagramPostProps> = ({ username, imageUrl, capti
       {/* Action Buttons */}
       <div className="flex justify-between items-center px-4 py-2">
         <div className="flex space-x-4">
-          <Heart className="w-6 h-6" />
-          <MessageCircle className="w-6 h-6" />
-          <Send className="w-6 h-6" />
+          <Heart className="w-6 h-6 text-black" />
+          <MessageCircle className="w-6 h-6 text-black" />
+          <Send className="w-6 h-6 text-black" />
         </div>
-        <Bookmark className="w-6 h-6" />
+        <Bookmark className="w-6 h-6 text-black" />
       </div>
 
       {/* Likes */}
       <div className="px-4 py-2">
-        <span className="font-semibold text-sm">{likes} likes</span>
+        <span className="font-semibold text-sm text-black">{likes} likes</span>
       </div>
 
       {/* Caption */}
       <div className="px-4 py-2">
-        <span className="font-semibold text-sm mr-2">{username}</span>
-        <span className="text-sm">{caption}</span>
+        <span className="font-semibold text-sm mr-2 text-black">{username}</span>
+        <span className="text-sm text-black">{caption}</span>
       </div>
 
-      {/* Comments */}
-      <div className="px-4 py-2">
-        <span className="text-sm text-gray-500">View all {comments} comments</span>
-      </div>
-
-      {/* Add Comment */}
-      <div className="border-t border-gray-200 px-4 py-2">
-        <input 
-          type="text" 
-          placeholder="Add a comment..." 
-          className="w-full text-sm outline-none"
-        />
-      </div>
     </div>
   );
 };

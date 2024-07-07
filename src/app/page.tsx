@@ -130,7 +130,7 @@ export default function Landing() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
       {session ? (
         <div className="flex w-full">
-          <div className="w-1/2 p-4">
+          <div className="w-1/2 p-4 max-h-screen overflow-auto">
             <h2 className="text-xl mb-4">Edit</h2>
             <input type="file" onChange={handleFileChange} className="mb-4" />
             {exifData && (
