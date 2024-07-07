@@ -129,7 +129,7 @@ export default function Landing() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
       {session ? (
         <div className="flex w-full h-screen">
-          <div className="w-1/2 p-4 overflow-auto" style={{ maxHeight: "100%" }}>
+          <div className="w-1/2 p-4 overflow-auto bg-gray-800 border border-gray-700 rounded-lg" style={{ maxHeight: "100%" }}>
             <h2 className="text-xl mb-4">Edit</h2>
             <input type="file" onChange={handleFileChange} className="mb-4" />
             <div className="fixed-image-container mb-4">
@@ -150,7 +150,7 @@ export default function Landing() {
             {imageSrc && <button onClick={downloadImageWithExif}>Download Image</button>}
             <button onClick={handleLogout}>Logout</button>
           </div>
-          <div className="w-1/2 p-4">
+          <div className="w-1/2 p-4 bg-gray-800 border border-gray-700 rounded-lg">
             <h2 className="text-xl mb-4">Preview on Instagram</h2>
             {imageSrc && (
               <InstagramPost
@@ -175,4 +175,3 @@ export default function Landing() {
     </main>
   );
 }
-
