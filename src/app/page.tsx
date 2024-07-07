@@ -78,7 +78,11 @@ export default function Landing() {
       const ctx = canvas.getContext('2d');
       const img = imgRef.current;
 
-      const scale = 0.5;
+      // Calculate the scale factor to fit the image within the canvas
+      const maxWidth = 800; // Maximum width for the image
+      const maxHeight = 800; // Maximum height for the image
+      let scale = Math.min(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+
       const imgWidth = img.naturalWidth * scale;
       const imgHeight = img.naturalHeight * scale;
       const padding = 100;
