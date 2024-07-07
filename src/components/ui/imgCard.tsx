@@ -25,7 +25,7 @@ const ImgCard: React.FC<ImgCardProps> = ({ manufacturer, model, focalLength, ape
   return (
     <div className="max-w-2xl mx-auto p-4 max-h-screen overflow-auto">
       <div className="bg-white border border-gray-200 p-4">
-        <img ref={imgRef} src={imageSrc} alt="Uploaded" className="w-full h-auto object-contain" />
+        <img ref={imgRef} src={imageSrc} alt="Uploaded" className="w-full h-auto object-contain" style={{ objectFit: 'contain' }} />
         <div className="text-center mt-4">
           <h1 className={titleStyle}>{manufacturer} {model}</h1>
           <div className={textStyle}>
